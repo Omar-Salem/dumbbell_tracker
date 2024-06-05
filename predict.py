@@ -18,6 +18,7 @@
 from deepface import DeepFace
 f1 = "test.jpg"
 f2 = "source.jpg"
-backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
-result = DeepFace.verify(img1_path=f1, img2_path=f2, detector_backend=backends[2])
+# backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
+# result = DeepFace.verify(img1_path=f1, img2_path=f2, detector_backend=backends[2])
+dfs = DeepFace.find(img_path = f1, db_path = "db")
 print(result)
