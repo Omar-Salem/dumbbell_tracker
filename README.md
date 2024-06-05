@@ -7,6 +7,7 @@ pip3 install dlib
 pip3 install tf-keras
 pip3 install deepface
 pip3 install ultralytics
+pip3 install opencv-python
 ```
 
 ### Run demo
