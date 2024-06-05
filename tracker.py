@@ -8,7 +8,7 @@ model = YOLO("weights.pt")
 video_path = "/Users/omar.salem/Desktop/v.mov"
 # video_path = "/Users/omar.salem/Downloads/stepper.mp4"
 cap = cv2.VideoCapture(video_path)
-kwargs={"conf":.1}
+kwargs={"conf":.5}
 
 initiated=False
 # Loop through the video frames
