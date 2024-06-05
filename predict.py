@@ -1,15 +1,23 @@
-import cv2
-from PIL import Image
-from ultralytics import YOLO
+# import cv2
+# from PIL import Image
+# from ultralytics import YOLO
 
-model = YOLO("weights.pt")
-# accepts all formats - image/dir/Path/URL/video/PIL/ndarray. 0 for webcam
-results = model.predict(source="d.jpg", show=True)  # Display preds. Accepts all YOLO predict arguments
-results[0].save(filename=f"results.jpg")
+# kwargs={"conf":.5}
+# model = YOLO("yolov8n.pt")
+# # accepts all formats - image/dir/Path/URL/video/PIL/ndarray. 0 for webcam
+# results = model.predict(source="us.jpg", show=True, **kwargs)  # Display preds. Accepts all YOLO predict arguments
+# results[0].save(filename=f"results.jpg")
 
 
-boxes=results[0].boxes.xyxy
-print(results[0].boxes.id)
-for xyxy in boxes:
-    print(xyxy[0])
-    print(xyxy[1])
+# boxes=results[0].boxes.xyxy
+# print(results[0].boxes.id)
+# for xyxy in boxes:
+#     print(xyxy[0])
+#     print(xyxy[1])
+
+from deepface import DeepFace
+f1 = "test.jpg"
+f2 = "source.jpg"
+backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
+result = DeepFace.verify(img1_path=f1, img2_path=f2, detector_backend=backends[2])
+print(result)

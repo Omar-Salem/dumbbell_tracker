@@ -2,7 +2,7 @@ import cv2
 from ultralytics import YOLO
 
 # Load the YOLOv8 model
-model = YOLO("weights.pt")
+model = YOLO("dumbell_weights.pt")
 
 # Open the video file
 video_path = "/Users/omar.salem/Desktop/v.mov"
