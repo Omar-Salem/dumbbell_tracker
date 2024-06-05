@@ -4,6 +4,7 @@ from ultralytics import YOLO
 import math
 import sys 
 from deepface import DeepFace
+import os
 
 def extractXY(b):
     xyxy=b.xyxy[0]
@@ -12,8 +13,8 @@ def extractXY(b):
 kwargs={"conf":.5}
 model = YOLO("yolov8n.pt")
 # accepts all formats - image/dir/Path/URL/video/PIL/ndarray. 0 for webcam
-results = model.predict(source="us.jpg", show=True, **kwargs)  # Display preds. Accepts all YOLO predict arguments
-results[0].save(filename=f"results.jpg")
+results = model.predict(source="us_.jpg", **kwargs)  # Display preds. Accepts all YOLO predict arguments
+
 
 boxes=results[0].boxes
 persons=[b for b in boxes if b.cls.item()==0]
@@ -21,7 +22,7 @@ coords=map(extractXY, persons)
 minDistance=sys.maxsize
 xyxy=None
 q=[785.1337890625, 481.4678039550781] #TODO CHANGE THIS!
-frame=Image.open('us.jpg')           #TODO CHANGE THIS!
+frame=Image.open('us_.jpg')           #TODO CHANGE THIS!
 for c in coords:
     x1=c[0]
     y1=c[1]
@@ -31,8 +32,13 @@ for c in coords:
         xyxy=c
 print(xyxy)
 frame = frame.crop(xyxy)
-# frame.save('_0.png')
+frame.save('_0.png')
 # frame = "test.jpg"
 backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
-result = DeepFace.find(img_path = frame, db_path = "db", detector_backend=backends[2])
-print(result)
+db_path="db"
+result = DeepFace.find(img_path = '_0.png', db_path = db_path, detector_backend=backends[2])
+for row in result:
+    identity = row["identity"][0]
+    basename=os.path.basename(identity)
+    identity=os.path.splitext(basename)[0]
+    print(identity)
