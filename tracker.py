@@ -20,11 +20,18 @@ while cap.isOpened():
         break
     # Run YOLOv8 tracking on the frame, persisting tracks between frames
     results = model.track(frame, persist=True, **kwargs)
-
+    # print('results:', end='')
+    # print(results[0].boxes)
     boxes=results[0].boxes
     for b in boxes:
+        if b is None:
+            continue
+        if b.cls.item() == 1:
+            continue
         print('id:', end='')
         print(b.id.item(), end='')
+        print(',class:', end='')
+        print(b.cls.item(), end='')
         print(', x:', end='')
         print(b.xyxy[0][0].item(), end='')
         print(', y:', end='')
