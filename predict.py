@@ -39,6 +39,6 @@ db_path="db"
 result = DeepFace.find(img_path = '_0.png', db_path = db_path, detector_backend=backends[2])
 for row in result:
     identity = row["identity"][0]
-    basename=os.path.basename(identity)
-    identity=os.path.splitext(basename)[0]
-    print(identity)
+    fileNameWithExtensions=os.path.basename(identity)
+    personName=os.path.splitext(fileNameWithExtensions)[0]
+    print(personName)
