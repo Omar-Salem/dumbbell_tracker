@@ -43,13 +43,13 @@ class Extractor:
         x2=xyxy[2]
         y2=xyxy[3]
         frame = frame[y1:y2, x1:x2]  #TODO refactor
-        im = Image.fromarray(frame)
-        im.save('_0.png')
-        # backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
-        # db_path="db"
-        # result = DeepFace.find(img_path = '_0.png', db_path = db_path, detector_backend=backends[2])
-        # for row in result:
-        #     identity = row["identity"][0]
-        #     fileNameWithExtensions=os.path.basename(identity)
-        #     personName=os.path.splitext(fileNameWithExtensions)[0]
-        #     return
+        # im = Image.fromarray(frame)
+        # im.save('_0.png')
+        backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
+        db_path="db"
+        result = DeepFace.find(img_path = frame, db_path = db_path, detector_backend=backends[2])
+        for row in result:
+            identity = row["identity"][0]
+            fileNameWithExtensions=os.path.basename(identity)
+            personName=os.path.splitext(fileNameWithExtensions)[0]
+            return
