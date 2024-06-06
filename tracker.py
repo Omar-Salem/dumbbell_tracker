@@ -1,6 +1,7 @@
 import cv2
 from ultralytics import YOLO
 import math
+from extractor import Extractor
 
 class Position:
     def __init__(self, x, y):
@@ -29,10 +30,10 @@ kwargs={"conf":.5}
 
 initiated=False
 dumbells={}
+extractor=Extractor()
 while cap.isOpened():
     # Read a frame from the video
     success, frame = cap.read()
-
     if not success:
         break
     # Run YOLOv8 tracking on the frame, persisting tracks between frames
@@ -54,9 +55,11 @@ while cap.isOpened():
             xyxy=d.xyxy[0]
             x=xyxy[0].item()
             y=xyxy[1].item()
-            if dumbells[id].moved(x,y):
+            if id in dumbells and dumbells[id].moved(x,y):
+                person=extractor.findPersonClosestToPoint(frame,[x,y])
+                print(person)
 
-    print(dumbells)
+
 
 
     
