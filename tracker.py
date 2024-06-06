@@ -1,5 +1,22 @@
 import cv2
 from ultralytics import YOLO
+import math
+
+class Position:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __str__(self):
+        return f'{self.x}, {self.y}'
+
+    def __repr__(self):
+        return self.__str__()
+
+    def moved(self,x,y):
+        return math.dist([self.x,self.y], [x,y])>0.1
+
+
 
 # Load the YOLOv8 model
 model = YOLO("dumbell_weights.pt")
@@ -11,7 +28,7 @@ cap = cv2.VideoCapture(video_path)
 kwargs={"conf":.5}
 
 initiated=False
-# Loop through the video frames
+dumbells={}
 while cap.isOpened():
     # Read a frame from the video
     success, frame = cap.read()
@@ -21,34 +38,25 @@ while cap.isOpened():
     # Run YOLOv8 tracking on the frame, persisting tracks between frames
     results = model.track(frame, persist=True, **kwargs)
     boxes=results[0].boxes
-    for b in boxes:
-        if b is None:
-            continue
-        if b.cls.item() == 1:
-            continue
-        print('id:', end='')
-        print(b.id.item(), end='')
-        print(',class:', end='')
-        print(b.cls.item(), end='')
-        print(', x:', end='')
-        print(b.xyxy[0][0].item(), end='')
-        print(', y:', end='')
-        print(b.xyxy[0][1].item())
-        # for xyxy in b.xyxy[0]:
-        #     print(xyxy.item())
-        # x=coords[0]
-        # y=coords[1]
-    # if not initiated:
-    #     initiated=True
-        # print('id:')
-        # print(b.id)
-        # print('xyxy:')
-        # print(b.xyxy)
+    discovered_dumbells=[b for b in boxes if b is not None and b.cls.item()==0]
+    
+    if not initiated:
+        initiated=True
+        for d in discovered_dumbells:
+            id=d.id.item()
+            xyxy=d.xyxy[0]
+            x=xyxy[0].item()
+            y=xyxy[1].item()
+            dumbells[id]=Position(x,y)
+    else:
+        for d in discovered_dumbells:
+            id=d.id.item()
+            xyxy=d.xyxy[0]
+            x=xyxy[0].item()
+            y=xyxy[1].item()
+            if dumbells[id].moved(x,y):
 
-    # if not detected:
-    #     # start timer
-    # else:
-    #     # reset timer
+    print(dumbells)
 
 
     
@@ -67,8 +75,3 @@ while cap.isOpened():
 # Release the video capture object and close the display window
 cap.release()
 cv2.destroyAllWindows()
-
-class Dumbell:
-  def __init__(self, x, y):
-    self.x = x
-    self.y = y
