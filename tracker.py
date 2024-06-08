@@ -15,7 +15,10 @@ class Position:
         return self.__str__()
 
     def moved(self,x,y):
-        return math.dist([self.x,self.y], [x,y])>0.1
+        d=math.dist([self.x,self.y], [x,y])
+        print('dddddddddddddddddddddd:')
+        print(d)
+        return d>0.1
 
 
 
@@ -23,7 +26,7 @@ class Position:
 model = YOLO("dumbell_weights.pt")
 
 # Open the video file
-video_path = "/Users/omar.salem/Desktop/v.mov"
+video_path = "v2.mp4"
 # video_path = "/Users/omar.salem/Downloads/stepper.mp4"
 cap = cv2.VideoCapture(video_path)
 kwargs={"conf":.5}
@@ -39,9 +42,10 @@ while cap.isOpened():
     # Run YOLOv8 tracking on the frame, persisting tracks between frames
     results = model.track(frame, persist=True, **kwargs)
     boxes=results[0].boxes
-    discovered_dumbells=[b for b in boxes if b is not None and b.cls.item()==0]
+    discovered_dumbells=[b for b in boxes if b is not None and b.id is not None and b.cls.item()==0]
     
     if not initiated:
+        print('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ:')
         initiated=True
         for d in discovered_dumbells:
             id=d.id.item()
@@ -49,6 +53,9 @@ while cap.isOpened():
             x=xyxy[0].item()
             y=xyxy[1].item()
             dumbells[id]=Position(x,y)
+
+            print('ppppppppppppp:')
+            print(Position(x,y))
     else:
         for d in discovered_dumbells:
             id=d.id.item()
@@ -59,11 +66,6 @@ while cap.isOpened():
                 person=extractor.findPersonClosestToPoint(frame,[x,y])
                 print(person)
 
-
-
-
-    
-   
 
     # Visualize the results on the frame
     annotated_frame = results[0].plot()
