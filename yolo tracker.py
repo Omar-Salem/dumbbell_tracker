@@ -1,7 +1,7 @@
 import cv2
 from ultralytics import YOLO
 import math
-from extractor import Extractor
+from memberFinder import MemberFinder
 
 class Position:
     def __init__(self, x, y):
@@ -33,7 +33,7 @@ kwargs={"conf":.5}
 
 initiated=False
 dumbells={}
-extractor=Extractor()
+memberFinder=MemberFinder()
 while cap.isOpened():
     # Read a frame from the video
     success, frame = cap.read()
@@ -63,7 +63,7 @@ while cap.isOpened():
             x=xyxy[0].item()
             y=xyxy[1].item()
             if id in dumbells and dumbells[id].moved(x,y):
-                person=extractor.findPersonClosestToPoint(frame,[x,y])
+                person=memberFinder.findPersonClosestToPoint(frame,[x,y])
                 print(person)
 
 
