@@ -10,10 +10,11 @@ import numpy
 class MemberFinder:
     def __init__(self):
         self.kwargs={"conf":.5}
-        self.model = YOLO("yolov8n.pt")
+        self.model = YOLO("yolov8n-face.pt")
 
         self.backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
         self.db_path="db"
+        self.face_distance_threshold=100
 
     def __extractXY__(self,b):
         xyxy=b.xyxy[0]
@@ -38,6 +39,17 @@ class MemberFinder:
         if(len(persons)<1):
             return None
         coords=map(self.__extractXY__, persons)
+        coords=[c for c in coords if math.dist([c[0],c[1]], [c[2],c[3]])>=self.face_distance_threshold] #inlcude only near faces
+
+        # cv2.rectangle(frame, (235, 0), (302, 89), (0, 0,255), 2)
+        # cv2.rectangle(frame, (435, 226), (461, 264), (0, 0,255), 2)
+        # cv2.rectangle(frame, (390, 215), (414, 246), (0, 0,255), 2)
+        cv2.imwrite('coords.png', frame)
+
+
+        # print(math.dist((235, 0), (302, 89)))
+        # print(math.dist((435, 226), (461, 264)))
+        # print(math.dist((390, 215), (414, 246)))
         minDistance=sys.maxsize
         xyxy=None
         for c in coords:
@@ -47,6 +59,8 @@ class MemberFinder:
             if minDistance>d:
                 minDistance=d
                 xyxy=c
+                # print('ddddddddddddd')
+                # print(xyxy)
         
         x1=xyxy[0]
         y1=xyxy[1]
