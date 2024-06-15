@@ -4,7 +4,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
-from PIL import Image
 from memberFinder import MemberFinder
 import threading
 import datetime
@@ -46,13 +45,9 @@ class Dumbell:
 		self.emptyTemplateImage = cv2Image
 
 	def getEmptyTemplateFilePath(self):
-		return '{}Ks_{}.png'.format(self.weight, self.x1)
+		return 'dumbells/empty/{}Ks_{}.png'.format(self.weight, self.x1)
 
 
-# PREPARE:
-# https://ezgif.com/video-to-jpg
-# Get (x1,y1), (x2, y2) of each dumbell holder after removed from rack, as small as possible
-# from https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
 
 dumbells = [Dumbell(5, 226, 441, 243, 452)]
 
@@ -62,30 +57,24 @@ matchTemplateThreshold = 0.6
 cap = cv2.VideoCapture(video_path)
 removedDumbellsNeedingMemberIdentification=[]
 removedDumbells=[]
-  
-# font 
-font = cv2.FONT_HERSHEY_SIMPLEX 
-  
-# org 
-org = (50, 50) 
-  
-# fontScale 
-fontScale = 1
-   
-# Blue color in BGR 
-color = (255, 255, 255) 
-  
-# Line thickness of 2 px 
-thickness = 2
 
-#bonus, get image of each dumbell on fill rack to track individual weights
-# fullRack = cv2.imread('full.png')
+
+# Prepare offline:
+# https://ezgif.com/video-to-jpg
+# Get (x1,y1), (x2, y2) of each dumbell holder after removed from rack, as small as possible
+# from https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
+
+
+#bonus, get image of each dumbell on full rack to track individual weights
+# fullRack = cv2.imread('full_rack.png')
 
 
 for d in dumbells:
-	im = Image.open('empty_rack.png').convert('L')
-	im = im.crop((d.x1, d.y1, d.x2, d.y2))
-	im.save(d.getEmptyTemplateFilePath())
+	image = cv2.imread('empty_rack.png')
+	# Grayscale 
+	image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 
+	image = image[d.y1:d.y2,d.x1:d.x2]
+	cv2.imwrite(d.getEmptyTemplateFilePath(), image)
 	d.setCV2EmptyTemplateImage(cv2.imread(d.getEmptyTemplateFilePath()))
 
 
@@ -98,8 +87,8 @@ while cap.isOpened():
 
 	for d in removedDumbells:
 		cv2.rectangle(frame, (d.x1,d.y1), (d.x2,d.y2), (0, 0,255), 2)
-		cv2.putText(frame, '{} {}'.format(d.holder,d.weight), (d.x1,d.y1), font,  
-				   fontScale, color, thickness, cv2.LINE_AA) 
+		cv2.putText(frame, '{} {}'.format(d.holder,d.weight), (d.x1,d.y1), cv2.FONT_HERSHEY_SIMPLEX ,  
+				   1, (255, 255, 255) , 2, cv2.LINE_AA) 
 	
 	cv2.imshow('gym', frame)
 
@@ -110,6 +99,7 @@ while cap.isOpened():
 		template = d.getCV2EmptyTemplateImage()
 		(w, h) = template.shape[:-1]
 		searchArea = frame[d.y1:d.y2, d.x1:d.x2]  # restrict search area
+		# searchArea = cv2.cvtColor(searchArea, cv2.COLOR_BGR2GRAY) 
 		res = cv2.matchTemplate(searchArea, template,
 								cv2.TM_CCOEFF_NORMED)
 		# print(res)

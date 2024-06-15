@@ -13,7 +13,7 @@ class MemberFinder:
         self.model = YOLO("yolov8n-face.pt")
 
         self.backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
-        self.db_path="db"
+        self.db_path="faces"
         self.face_distance_threshold=100
 
     def __extractXY__(self,b):
