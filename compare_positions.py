@@ -60,40 +60,45 @@ for d in dumbells:
 video_path = 'v.mp4'
 matchTemplateThreshold = 0.9
 cap = cv2.VideoCapture(video_path)
+frameCounter=0
 while cap.isOpened():
 
 	# Read a frame from the video
 
 	(success, frame) = cap.read()
+	cv2.imwrite('frames/frame{}.png'.format(frameCounter), frame)
+	frameCounter+=1
 
 	if cv2.waitKey(10) & 0xFF == ord('q'):
 		break
 
-	if not success:
-		continue
+	# if not success:
+	# 	print('Skipped frame!')
+	# 	continue
 
 	cv2.imshow('window-name', frame)
 
-	for d in dumbells:
-		template = d.getCV2EmptyTemplateImage()
-		(w, h) = template.shape[:-1]
-		searchArea = frame[d.y1:d.y2, d.x1:d.x2]  # restrict search area
-		res = cv2.matchTemplate(searchArea, template,
-								cv2.TM_CCOEFF_NORMED)
-		removed = res >= matchTemplateThreshold
+	# for d in dumbells:
+	# 	template = d.getCV2EmptyTemplateImage()
+	# 	(w, h) = template.shape[:-1]
+	# 	searchArea = frame[d.y1:d.y2, d.x1:d.x2]  # restrict search area
+	# 	res = cv2.matchTemplate(searchArea, template,
+	# 							cv2.TM_CCOEFF_NORMED)
+	# 	removed = res >= matchTemplateThreshold
 
-		if not removed and d.removed:
-			print('put back!')
-			d.removed=False
-			d.holder=None
-		if removed and not d.removed:
-			d.removed=True
-			holder=memberFinder.findPersonClosestToPoint(frame,[d.x1,d.y1])
-			if holder is not None:
-				d.holder=holder
-				print('{} removed {}',format(d.holder,str(d.weight)))
-			cv2.rectangle(frame, (d.x1,d.y1), (d.x2,d.y2), (0, 0,255), 2)
-			cv2.imwrite('result.png', frame)
+	# 	if not removed and d.removed:
+	# 		print('put back!')
+	# 		d.removed=False
+	# 		d.holder=None
+	# 	if removed and not d.removed:
+	# 		cv2.imwrite('ooo.png', frame)
+	# 		d.removed=True
+	# 		holder=memberFinder.findPersonClosestToPoint(frame,[d.x1,d.y1])
+	# 		if holder is not None:
+	# 			d.holder=holder
+	# 			print('{} removed {}',format(d.holder,str(d.weight)))
+	# 		cv2.rectangle(frame, (d.x1,d.y1), (d.x2,d.y2), (0, 0,255), 2)
+	# 		cv2.imwrite('result.png', frame)
 
 cap.release()
 cv2.destroyAllWindows()

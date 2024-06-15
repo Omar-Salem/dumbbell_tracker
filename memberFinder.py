@@ -31,8 +31,12 @@ class MemberFinder:
 
     def findPersonClosestToPoint(self, frame:numpy.ndarray, q:list):
         results = self.model.predict(source=frame, **self.kwargs)  # Display preds. Accepts all YOLO predict arguments
+        if(len(results)<1):
+            return None
         boxes=results[0].boxes
         persons=[b for b in boxes if b.cls.item()==0]
+        if(len(persons)<1):
+            return None
         coords=map(self.__extractXY__, persons)
         minDistance=sys.maxsize
         xyxy=None
