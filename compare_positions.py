@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 from memberFinder import MemberFinder
+from imageComparer import ImageComparer
 import threading
 import datetime
 
@@ -18,7 +19,6 @@ def findPersonClosestToPoint(frame,r):
 	return False
 
 class Dumbell:
-
 	def __init__(
 		self,
 		weight,
@@ -48,35 +48,30 @@ class Dumbell:
 		return 'dumbells/empty/{}Ks_{}.png'.format(self.weight, self.x1)
 
 
-
 dumbells = [Dumbell(5, 226, 441, 243, 452)]
-
 memberFinder=MemberFinder()
 video_path = 'v.mp4'
-matchTemplateThreshold = 0.6
 cap = cv2.VideoCapture(video_path)
 removedDumbellsNeedingMemberIdentification=[]
 removedDumbells=[]
+imageComparer=ImageComparer()
 
-
-# Prepare offline:
-# https://ezgif.com/video-to-jpg
+# Prepare:
 # Get (x1,y1), (x2, y2) of each dumbell holder after removed from rack, as small as possible
 # from https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
 
+def crop(image, d):
+	return image[d.y1:d.y2, d.x1:d.x2]
 
-#bonus, get image of each dumbell on full rack to track individual weights
-# fullRack = cv2.imread('full_rack.png')
+def prepareDumbells(image):
+	for d in dumbells:
+		croppedImage = crop(image,d)
+		cv2.imwrite(d.getEmptyTemplateFilePath(), croppedImage)
+		# d.setCV2EmptyTemplateImage(image)
+		d.setCV2EmptyTemplateImage(cv2.imread(d.getEmptyTemplateFilePath()))
 
 
-for d in dumbells:
-	image = cv2.imread('empty_rack.png')
-	# Grayscale 
-	image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) 
-	image = image[d.y1:d.y2,d.x1:d.x2]
-	cv2.imwrite(d.getEmptyTemplateFilePath(), image)
-	d.setCV2EmptyTemplateImage(cv2.imread(d.getEmptyTemplateFilePath()))
-
+prepareDumbells(cv2.imread('empty_rack.png',cv2.IMREAD_GRAYSCALE))
 
 while cap.isOpened():
 
@@ -97,15 +92,12 @@ while cap.isOpened():
 
 	for d in dumbells:
 		template = d.getCV2EmptyTemplateImage()
-		(w, h) = template.shape[:-1]
-		searchArea = frame[d.y1:d.y2, d.x1:d.x2]  # restrict search area
-		# searchArea = cv2.cvtColor(searchArea, cv2.COLOR_BGR2GRAY) 
-		res = cv2.matchTemplate(searchArea, template,
-								cv2.TM_CCOEFF_NORMED)
-		# print(res)
-		removed = res >= matchTemplateThreshold
+		searchArea = crop(frame,d)  # restrict search area
+
+		removed=imageComparer.checkImagesSimilar(template,searchArea)
 
 		if not removed and d.removed:
+			# print('put back!!')
 			secondsPassedSinceRemoval=(datetime.datetime.now()-d.removedOn).total_seconds()
 			if secondsPassedSinceRemoval>1:
 				d.removed=False
@@ -113,12 +105,12 @@ while cap.isOpened():
 				d.removedOn=None
 				removedDumbells.remove(d)
 		if removed and not d.removed:
-			print('removed')
+			# print('removed#####')
 			d.removed=True
 			d.removedOn=datetime.datetime.now()
-			cv2.imwrite('result.png', frame)
-			if not findPersonClosestToPoint(frame,d):
-				removedDumbellsNeedingMemberIdentification.append(d)
+			cv2.imwrite('removed.png', frame)
+			# if not findPersonClosestToPoint(frame,d):
+			# 	removedDumbellsNeedingMemberIdentification.append(d)
 			removedDumbells.append(d)
 
 cap.release()
