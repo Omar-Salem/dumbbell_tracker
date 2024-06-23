@@ -2,12 +2,12 @@ from skimage.metrics import structural_similarity
 import cv2
 import numpy as np
         
-class ImageComparer(object):
+class ImageService(object):
     
     def __init__(self):
         self.minimum_commutative_image_diff = 1
-    
-    def checkImagesSimilar(self,image1, image2):
+
+    def check_images_similar(self, image1, image2):
         image_1=cv2.cvtColor(image1, cv2.COLOR_BGR2GRAY)
         image_2=cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
 

@@ -23,7 +23,7 @@ class Position:
 
 
 # Load the YOLOv8 model
-model = YOLO("dumbell_weights.pt")
+model = YOLO("dumbbell_weights.pt")
 
 # Open the video file
 video_path = "v.mp4"
@@ -32,7 +32,7 @@ cap = cv2.VideoCapture(video_path)
 kwargs={"conf":.5}
 
 initiated=False
-dumbells={}
+dumbbells={}
 memberFinder=MemberFinder()
 while cap.isOpened():
     # Read a frame from the video
@@ -42,27 +42,27 @@ while cap.isOpened():
     # Run YOLOv8 tracking on the frame, persisting tracks between frames
     results = model.track(frame, persist=True, **kwargs)
     boxes=results[0].boxes
-    discovered_dumbells=[b for b in boxes if b is not None and b.id is not None and b.cls.item()==0]
+    discovered_dumbbells=[b for b in boxes if b is not None and b.id is not None and b.cls.item()==0]
     
     if not initiated:
         print('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ:')
         initiated=True
-        for d in discovered_dumbells:
+        for d in discovered_dumbbells:
             id=d.id.item()
             xyxy=d.xyxy[0]
             x=xyxy[0].item()
             y=xyxy[1].item()
-            dumbells[id]=Position(x,y)
+            dumbbells[id]=Position(x,y)
 
             print('ppppppppppppp:')
             print(Position(x,y))
     else:
-        for d in discovered_dumbells:
+        for d in discovered_dumbbells:
             id=d.id.item()
             xyxy=d.xyxy[0]
             x=xyxy[0].item()
             y=xyxy[1].item()
-            if id in dumbells and dumbells[id].moved(x,y):
+            if id in dumbbells and dumbbells[id].moved(x,y):
                 person=memberFinder.findPersonClosestToPoint(frame,[x,y])
                 print(person)
 

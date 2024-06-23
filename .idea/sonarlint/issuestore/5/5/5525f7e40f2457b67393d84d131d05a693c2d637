@@ -1,0 +1,9 @@
+
+hpython:S116$"QRename this field "removedOn" to match the regular expression ^[_a-z][_a-z0-9]*$.(Œ…º¢
+qpython:S116""ZRename this field "emptyTemplateImage" to match the regular expression ^[_a-z][_a-z0-9]*$.(±×£Ä
+spython:S100'"\Rename method "getCV2EmptyTemplateImage" to match the regular expression ^[a-z_][a-z0-9_]*$.(ñŸâ…
+kpython:S117*"TRename this parameter "cv2Image" to match the regular expression ^[_a-z][a-z0-9_]*$.(ÔÛŽ«
+spython:S100*"\Rename method "setCV2EmptyTemplateImage" to match the regular expression ^[a-z_][a-z0-9_]*$.(ÔÛŽ«
+xpython:S100-"\Rename method "getEmptyTemplateFilePath" to match the regular expression ^[a-z_][a-z0-9_]*$.(êß§×øÿÿÿÿ
+ypython:S117D"]Rename this local variable "croppedImage" to match the regular expression ^[_a-z][a-z0-9_]*$.(à¡¼÷ýÿÿÿÿ
+;python:S125p"Remove this commented out code.(õïãàüÿÿÿÿ

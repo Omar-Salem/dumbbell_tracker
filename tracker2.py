@@ -17,7 +17,7 @@ import numpy as np
 import pathlib
 
 img_rgb = cv2.imread('image.png')
-for d in pathlib.Path('./dumbells').glob('*.png'):
+for d in pathlib.Path('./dumbbells').glob('*.png'):
 	print(d)
 	template = cv2.imread(str(d))
 	w, h = template.shape[:-1]
