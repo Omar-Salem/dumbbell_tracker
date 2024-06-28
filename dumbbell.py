@@ -1,3 +1,5 @@
+
+import datetime
 class Dumbbell:
     def __init__(
             self,
@@ -14,7 +16,7 @@ class Dumbbell:
         self.y2 = y2
         self.empty_template_image = None
         self.removed = False
-        self.removedOn = None
+        self.removed_on = None
         self.holder = None
 
     def get_cv2_empty_template_image(self):
@@ -25,3 +27,15 @@ class Dumbbell:
 
     def get_empty_template_file_path(self):
         return 'dumbbells/empty/{}Ks_{}.png'.format(self.weight, self.x1)
+    
+    def pick_up(self):
+        self.removed = True
+        self.removed_on = datetime.datetime.now()
+    
+    def put_back(self):
+        self.removed = False
+        self.holder = None
+        self.removed_on = None
+    
+    def get_seconds_passed_since_remove(self):
+        return (datetime.datetime.now() - self.removed_on).total_seconds()
