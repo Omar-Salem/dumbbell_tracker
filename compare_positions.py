@@ -4,7 +4,7 @@
 import cv2
 import datetime
 from dumbbell import Dumbbell
-from imageService import ImageService
+from image_comparer import ImageComparer
 from memberFinder import MemberFinder
 
 
@@ -22,7 +22,6 @@ video_path = 'v.mp4'
 cap = cv2.VideoCapture(video_path)
 removed_dumbells_needing_member_identification = []
 removed_dumbells = []
-imageComparer = ImageService()
 
 
 def crop(image, d):
@@ -61,17 +60,10 @@ while cap.isOpened():
         find_person_closest_to_point(frame, r)
 
     for d in dumbbells:
-        empty_holder_template = d.get_cv2_empty_template_image()
-        search_area = crop(frame, d)  # restrict search area
-
-        empty_holder_visible = imageComparer.check_images_similar(empty_holder_template, search_area)
-
-        if not empty_holder_visible and d.removed:
+        if d.check_put_back(frame):
             d.put_back()
-            # print('put back!!')
-            # if seconds_passed_since_removal > 1:
             removed_dumbells.remove(d)
-        if empty_holder_visible and not d.removed:
+        elif d.check_picked_up(frame):
             d.pick_up()
             cv2.imwrite('removed.png', frame)
             # if not findPersonClosestToPoint(frame,d):

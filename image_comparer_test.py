@@ -3,9 +3,9 @@ import cv2
 import numpy as np
 from pathlib import Path
 
-from imageService import ImageService
+from image_comparer import ImageComparer
 
-imageComparer=ImageService()
+imageComparer=ImageComparer()
 template = cv2.imread('dumbbells/empty/5Ks_226.png')
 # template = cv2.imread('average.png')
 

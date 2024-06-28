@@ -2,7 +2,7 @@ from skimage.metrics import structural_similarity
 import cv2
 import numpy as np
         
-class ImageService(object):
+class ImageComparer(object):
     
     def __init__(self):
         self.minimum_commutative_image_diff = 1
