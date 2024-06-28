@@ -39,21 +39,24 @@ class Dumbbell:
         self.holder = None
         self.removed_on = None
     
-    def crop(self, image):
+    def __crop(self, image):
         return image[self.y1:self.y2, self.x1:self.x2]
 
-    def is_place_holder_visible(self,frame):
+    def __is_place_holder_visible(self,frame):
         empty_holder_template = self.get_cv2_empty_template_image()
-        search_area = self.crop(frame)  # restrict search area
+        search_area = self.__crop(frame)  # restrict search area
         return self.imageComparer.check_images_similar(empty_holder_template, search_area)
 
     def check_put_back(self,frame):
-        empty_holder_visible = self.is_place_holder_visible(frame)
+        empty_holder_visible = self.__is_place_holder_visible(frame)
         return not empty_holder_visible and self.removed
     
     def check_picked_up(self,frame):
-        empty_holder_visible = self.is_place_holder_visible(frame)
+        empty_holder_visible = self.__is_place_holder_visible(frame)
         return  empty_holder_visible and not self.removed
     
-    def get_seconds_passed_since_remove(self):
+    def get_label(self):
+       return '{} {}Kg {}'.format(self.holder, self.weight, round(self.__get_seconds_passed_since_remove()))
+    
+    def __get_seconds_passed_since_remove(self):
         return (datetime.datetime.now() - self.removed_on).total_seconds()

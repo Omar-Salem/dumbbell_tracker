@@ -51,7 +51,7 @@ while cap.isOpened():
 
     for d in removed_dumbells:
         cv2.rectangle(frame, (d.x1, d.y1), (d.x2, d.y2), (0, 0, 255), 2)
-        cv2.putText(frame, '{} {}'.format(d.holder, d.weight), (d.x1, d.y1), cv2.FONT_HERSHEY_SIMPLEX,
+        cv2.putText(frame, d.get_label(), (d.x1, d.y1), cv2.FONT_HERSHEY_SIMPLEX,
                     1, (255, 255, 255), 2, cv2.LINE_AA)
 
     cv2.imshow('gym', frame)
