@@ -12,16 +12,16 @@ class Dumbbell:
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
-        self.emptyTemplateImage = None
+        self.empty_template_image = None
         self.removed = False
         self.removedOn = None
         self.holder = None
 
-    def getCV2EmptyTemplateImage(self):
-        return self.emptyTemplateImage
+    def get_cv2_empty_template_image(self):
+        return self.empty_template_image
 
-    def setCV2EmptyTemplateImage(self, cv2Image):
-        self.emptyTemplateImage = cv2Image
+    def set_cv2_empty_template_image(self, cv2Image):
+        self.empty_template_image = cv2Image
 
-    def getEmptyTemplateFilePath(self):
+    def get_empty_template_file_path(self):
         return 'dumbbells/empty/{}Ks_{}.png'.format(self.weight, self.x1)

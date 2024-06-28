@@ -26,23 +26,23 @@ removedDumbells = []
 imageComparer = ImageService()
 
 
-# Prepare:
-# Get (x1,y1), (x2, y2) of each dumbbell holder after removed from rack, as small as possible
-# from https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
-
 def crop(image, d):
     return image[d.y1:d.y2, d.x1:d.x2]
 
 
-def prepare_dumbbells(image):
+def prepare_dumbbells():
+    '''
+    Get (x1,y1), (x2, y2) of each dumbbell holder from an image of the empty rack, as small as possible
+    https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
+    '''
+    image = cv2.imread('frames/frame175.png', cv2.IMREAD_GRAYSCALE)
     for d in dumbbells:
-        croppedImage = crop(image, d)
-        cv2.imwrite(d.getEmptyTemplateFilePath(), croppedImage)
-        # d.setCV2EmptyTemplateImage(image)
-        d.setCV2EmptyTemplateImage(cv2.imread(d.getEmptyTemplateFilePath()))
+        cropped_image = crop(image, d)
+        cv2.imwrite(d.get_empty_template_file_path(), cropped_image)
+        d.set_cv2_empty_template_image(cv2.imread(d.get_empty_template_file_path()))
 
 
-prepare_dumbbells(cv2.imread('frames/frame175.png', cv2.IMREAD_GRAYSCALE))
+prepare_dumbbells()
 
 while cap.isOpened():
 
@@ -62,7 +62,7 @@ while cap.isOpened():
         find_person_closest_to_point(frame, r)
 
     for d in dumbbells:
-        template = d.getCV2EmptyTemplateImage()
+        template = d.get_cv2_empty_template_image()
         searchArea = crop(frame, d)  # restrict search area
 
         removed = imageComparer.check_images_similar(template, searchArea)
