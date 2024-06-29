@@ -1,3 +1,13 @@
-.idea
-__pycache__
 .DS_Store
+__pycache__/
+*.py[cod]
+*.pyd
+*.pyo
+*.so
+.env
+venv/
+dist/
+build/
+*.egg-info/
+.idea/
+*.log

@@ -1,11 +1,21 @@
-from src.member_finder import MemberFinder
-import pathlib
+import unittest
 import cv2
-memberFinder=MemberFinder()
 
-frame = cv2.imread(str('picked_up.png'))
-holder=memberFinder.find_person_closest_to_point(frame,[226, 441])
-if holder is None:
-	raise('holder null')
-if holder !='Omar':
-	raise(holder)
+from dumbbell_tracker.member_finder import MemberFinder
+
+
+target=MemberFinder()
+
+class TestCategorizeByAge(unittest.TestCase):
+	def test_child(self):
+		# Arrange
+		frame=cv2.imread(str('picked_up.png'))
+		
+		# Act
+		member=target.find_person_closest_to_point(frame,[226, 441])
+
+		# Assert
+		self.assertEqual("Omar Salem",member)
+
+if __name__ == "__main__":
+	unittest.main()

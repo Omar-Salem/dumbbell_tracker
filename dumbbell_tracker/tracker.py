@@ -36,7 +36,7 @@ while cap.isOpened():
 
     if frame is None:
         break
-    
+
     if not init:
         init=True
         for d in dumbbells:
@@ -49,7 +49,7 @@ while cap.isOpened():
     for d in dumbbells:
         if d.check_removed(frame):
             print('removed')
-            # cv2.imwrite('picked_up.png',frame)
+            cv2.imwrite('picked_up.png',frame)
             d.remove()
             removed_dumbells.append(d)
         elif d.check_put_back(frame):
@@ -64,6 +64,6 @@ while cap.isOpened():
                     1, (255, 255, 255), 2, cv2.LINE_AA)
 
     cv2.imshow('gym', frame)
-    time.sleep(0.0625)
+    # time.sleep(0.0625)
 cap.release()
 cv2.destroyAllWindows()
