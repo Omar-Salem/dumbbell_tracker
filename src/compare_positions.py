@@ -10,7 +10,7 @@ from member_finder import MemberFinder
 
 
 '''
-Get (x1,y1), (x2, y2) of each dumbbell holder from an image of the empty rack, as small as possible
+Get (x1,y1), (x2, y2) of each dumbbell from an image of the full rack, as small as possible
 https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
 '''
 dumbbells = [Dumbbell(5, 226, 441, 243, 452)]
