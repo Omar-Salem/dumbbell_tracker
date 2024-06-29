@@ -11,7 +11,7 @@ template = cv2.imread('dumbbells/empty/5Ks_226.png')
 
 
 # full rack
-for x in range(126):
+for x in range(127):
     d='frames/frame{}.png'.format(x)
     print(d)
     test = cv2.imread(d)[441:452, 226:243]
@@ -21,7 +21,7 @@ for x in range(126):
         raise('negative matching failed')
     
 # empty
-for x in range(151,242):
+for x in range(151,244):
     d='frames/frame{}.png'.format(x)
     print(d)
     test = cv2.imread(d)[441:452, 226:243]
@@ -31,11 +31,11 @@ for x in range(151,242):
         raise('positive matching failed')
 
 # put back
-# for x in range(243,322):
-#     d='frames/frame{}.png'.format(x)
-#     print(d)
-#     test = cv2.imread(d)[441:452, 226:243]
-#     b=imageComparer.check_images_similar(template, test)
-#     if b:
-#         cv2.imwrite('negative matching failure_2.png', test)
-#         raise('negative matching failed')
+for x in range(245,322):
+    d='frames/frame{}.png'.format(x)
+    print(d)
+    test = cv2.imread(d)[441:452, 226:243]
+    b=imageComparer.check_images_similar(template, test)
+    if b:
+        cv2.imwrite('negative matching failure_2.png', test)
+        raise('negative matching 2 failed')

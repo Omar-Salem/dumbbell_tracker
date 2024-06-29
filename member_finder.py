@@ -9,14 +9,14 @@ import numpy
 
 class MemberFinder:
     def __init__(self):
-        self.kwargs={"conf":.5}
+        self.kwargs={"conf":.8}
         self.model = YOLO("yolov8n-face.pt")
 
         self.backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
         self.db_path="faces"
         self.face_distance_threshold=100
 
-    def __extractXY__(self,b):
+    def __extractXY(self,b):
         xyxy=b.xyxy[0]
         return int(xyxy[0].item()),int(xyxy[1].item()),int(xyxy[2].item()),int(xyxy[3].item())
     
@@ -38,35 +38,37 @@ class MemberFinder:
         persons=[b for b in boxes if b.cls.item()==0]
         if(len(persons)<1):
             return None
-        coords=map(self.__extractXY__, persons)
-        coords=[c for c in coords if math.dist([c[0],c[1]], [c[2],c[3]])>=self.face_distance_threshold] #inlcude only near faces
+        coords=map(self.__extractXY, persons)
+        return coords
+        # coords=[c for c in coords if math.dist([c[0],c[1]], [c[2],c[3]])>=self.face_distance_threshold] #inlcude only near faces
 
         # cv2.rectangle(frame, (235, 0), (302, 89), (0, 0,255), 2)
         # cv2.rectangle(frame, (435, 226), (461, 264), (0, 0,255), 2)
         # cv2.rectangle(frame, (390, 215), (414, 246), (0, 0,255), 2)
-        cv2.imwrite('coords.png', frame)
+        # cv2.imwrite('coords.png', frame)
 
 
         # print(math.dist((235, 0), (302, 89)))
         # print(math.dist((435, 226), (461, 264)))
         # print(math.dist((390, 215), (414, 246)))
-        minDistance=sys.maxsize
-        xyxy=None
-        for c in coords:
-            x1=c[0]
-            y1=c[1]
-            d=math.dist([x1,y1], q)
-            if minDistance>d:
-                minDistance=d
-                xyxy=c
-                # print('ddddddddddddd')
-                # print(xyxy)
+        # minDistance=sys.maxsize
+        # xyxy=None
+        # for c in coords:
+        #     x1=c[0]
+        #     y1=c[1]
+        #     d=math.dist([x1,y1], q)
+        #     if minDistance>d:
+        #         minDistance=d
+        #         xyxy=c
+        #         # print('ddddddddddddd')
+        #         # print(xyxy)
         
-        x1=xyxy[0]
-        y1=xyxy[1]
+        # x1=xyxy[0]
+        # y1=xyxy[1]
 
-        x2=xyxy[2]
-        y2=xyxy[3]
+        # x2=xyxy[2]
+        # y2=xyxy[3]
 
-        cropped = frame[y1:y2, x1:x2]
-        return self.__identify__(cropped)
+        # # cropped = frame[y1:y2, x1:x2]
+        # return xyxy
+        # return self.__identify__(cropped)

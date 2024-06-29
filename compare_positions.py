@@ -5,21 +5,19 @@ import cv2
 import datetime
 from dumbbell import Dumbbell
 from member_finder import MemberFinder
+from ultralytics import YOLO
 
 
-def find_person_closest_to_point(current_frame, r):
-    holder = memberFinder.find_person_closest_to_point(current_frame, [r.x1, r.y1])
-    if holder is not None and r in removed_dumbells_needing_member_identification:
-        removed_dumbells_needing_member_identification.remove(r)
-        r.holder = holder
-        return True
-    return False
 
+
+'''
+Get (x1,y1), (x2, y2) of each dumbbell holder from an image of the empty rack, as small as possible
+https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
+'''
 dumbbells = [Dumbbell(5, 226, 441, 243, 452)]
-memberFinder = MemberFinder()
+member_finder = MemberFinder()
 video_path = 'v.mp4'
 cap = cv2.VideoCapture(video_path)
-removed_dumbells_needing_member_identification = []
 removed_dumbells = []
 
 
@@ -28,10 +26,6 @@ def crop(image, d):
 
 
 def prepare_dumbbells():
-    '''
-    Get (x1,y1), (x2, y2) of each dumbbell holder from an image of the empty rack, as small as possible
-    https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
-    '''
     image = cv2.imread('frames/frame175.png', cv2.IMREAD_GRAYSCALE)
     for d in dumbbells:
         cropped_image = crop(image, d)
@@ -40,7 +34,7 @@ def prepare_dumbbells():
 
 
 prepare_dumbbells()
-
+model = YOLO("yolov8n-face.pt")
 while cap.isOpened():
 
     (success, frame) = cap.read()
@@ -48,6 +42,9 @@ while cap.isOpened():
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
 
+    # results = model.predict(source=frame, conf=0.3, iou=0.5)
+    # print( member_finder.find_person_closest_to_point(frame,None))
+        # cv2.rectangle(frame, (d.x1, d.y1), (d.x2, d.y2), (0, 0, 255), 2)
     for d in removed_dumbells:
         cv2.rectangle(frame, (d.x1, d.y1), (d.x2, d.y2), (0, 0, 255), 2)
         cv2.putText(frame, d.get_label(), (d.x1, d.y1), cv2.FONT_HERSHEY_SIMPLEX,
@@ -55,18 +52,12 @@ while cap.isOpened():
 
     cv2.imshow('gym', frame)
 
-    for r in removed_dumbells_needing_member_identification:
-        find_person_closest_to_point(frame, r)
-
     for d in dumbbells:
         if d.check_put_back(frame):
             d.put_back()
             removed_dumbells.remove(d)
         elif d.check_picked_up(frame):
             d.pick_up()
-            cv2.imwrite('removed.png', frame)
-            # if not findPersonClosestToPoint(frame,d):
-            # 	removedDumbellsNeedingMemberIdentification.append(d)
             removed_dumbells.append(d)
 
 cap.release()
