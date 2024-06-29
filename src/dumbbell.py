@@ -70,11 +70,9 @@ class Dumbbell:
         return image[self.y1:self.y2, self.x1:self.x2]
 
     def __has_dumbbell_moved(self,frame):
-        full_template_image = self.dumbbell_image
         search_area = self.__crop(frame)  # restrict search area
-        return not self.imageComparer.check_images_similar(full_template_image, search_area)
+        return not self.imageComparer.check_images_similar(self.dumbbell_image, search_area)
     
     def __is_holder_visible(self,frame):
-        empty_holder_template = self.holder_image
         search_area = self.__crop(frame)  # restrict search area
-        return self.imageComparer.check_images_similar(empty_holder_template, search_area)
+        return self.imageComparer.check_images_similar(self.holder_image, search_area)
