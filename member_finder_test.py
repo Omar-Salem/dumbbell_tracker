@@ -1,10 +1,10 @@
-from memberFinder import MemberFinder
+from member_finder import MemberFinder
 import pathlib
 import cv2
 memberFinder=MemberFinder()
 
 frame = cv2.imread(str('result.png'))
-holder=memberFinder.findPersonClosestToPoint(frame,[226, 441])
+holder=memberFinder.find_person_closest_to_point(frame,[226, 441])
 if holder is not None:
 	print('FOUND {}'.format(holder))
 # for d in pathlib.Path('./frames').glob('*.png'):

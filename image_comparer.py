@@ -13,5 +13,5 @@ class ImageComparer(object):
 
         # Compute SSIM between two images
         (score, diff) = structural_similarity(image_1, image_2, full=True)
-        print(score)
+        # print(score)
         return score>0.8

@@ -4,12 +4,11 @@
 import cv2
 import datetime
 from dumbbell import Dumbbell
-from image_comparer import ImageComparer
-from memberFinder import MemberFinder
+from member_finder import MemberFinder
 
 
 def find_person_closest_to_point(current_frame, r):
-    holder = memberFinder.findPersonClosestToPoint(current_frame, [r.x1, r.y1])
+    holder = memberFinder.find_person_closest_to_point(current_frame, [r.x1, r.y1])
     if holder is not None and r in removed_dumbells_needing_member_identification:
         removed_dumbells_needing_member_identification.remove(r)
         r.holder = holder

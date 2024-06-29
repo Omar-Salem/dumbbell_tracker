@@ -30,7 +30,7 @@ class MemberFinder:
                 personName=os.path.splitext(fileNameWithExtensions)[0]
         return personName
 
-    def findPersonClosestToPoint(self, frame:numpy.ndarray, q:list):
+    def find_person_closest_to_point(self, frame:numpy.ndarray, q:list):
         results = self.model.predict(source=frame, **self.kwargs)  # Display preds. Accepts all YOLO predict arguments
         if(len(results)<1):
             return None
