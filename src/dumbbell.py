@@ -18,6 +18,7 @@ class Dumbbell:
         self.x2 = x2
         self.y2 = y2
         self.empty_template_image = None
+        self.full_template_image = None
         self.removed = False
         self.removed_on = None
         self.holder = None
@@ -27,17 +28,27 @@ class Dumbbell:
         cv2.imwrite(self.get_empty_template_file_path(), cropped_image)
         self.empty_template_image = cv2.imread(self.get_empty_template_file_path())
 
+    def set_full_template(self,frame):
+        cropped_image = self.__crop(frame)
+        cv2.imwrite(self.get_full_template_file_path(), cropped_image)
+        self.full_template_image = cv2.imread(self.get_full_template_file_path())
+
     def get_empty_template_file_path(self):
         return '../resources/dumbbells/empty/{}Ks_{}.png'.format(self.weight, self.x1)
     
+    def get_full_template_file_path(self):
+        return '../resources/dumbbells/full/{}Ks_{}.png'.format(self.weight, self.x1)
+
     def pick_up(self):
         self.removed = True
         self.removed_on = datetime.now()
+        self.full_template_image = None
     
-    def put_back(self):
+    def put_back(self,frame):
         self.removed = False
         self.removed_on = None
         self.holder = None
+        self.set_full_template(frame)
 
     def check_put_back(self,frame):
         empty_holder_visible = self.__is_place_holder_visible(frame)

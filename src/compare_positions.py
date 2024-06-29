@@ -6,9 +6,6 @@ import datetime
 from dumbbell import Dumbbell
 from member_finder import MemberFinder
 
-
-
-
 '''
 Get (x1,y1), (x2, y2) of each dumbbell from an image of the full rack
 https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
@@ -23,38 +20,42 @@ removed_dumbells = []
 
 def set_dumbbells_empty_templates():
     empty_rack = cv2.imread('../resources/empty_rack.png', cv2.IMREAD_GRAYSCALE)
-    # full_rack = cv2.imread('../resources/full_rack.png', cv2.IMREAD_GRAYSCALE)
     for d in dumbbells:
         d.set_empty_template(empty_rack)
 
 
 set_dumbbells_empty_templates()
+init = False
 while cap.isOpened():
 
     (success, frame) = cap.read()
 
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
+    
+    if not init:
+        init=True
+        for d in dumbbells:
+            d.set_full_template(frame)
 
     # results = model.predict(source=frame, conf=0.3, iou=0.5)
     # print( member_finder.find_person_closest_to_point(frame,None))
         # cv2.rectangle(frame, (d.x1, d.y1), (d.x2, d.y2), (0, 0, 255), 2)
+
+    for d in dumbbells:
+        if d.check_put_back(frame):
+            d.put_back(frame)
+            removed_dumbells.remove(d)
+        elif d.check_picked_up(frame):
+            # cv2.imwrite('picked_up.png',frame)
+            d.pick_up()
+            removed_dumbells.append(d)
+
     for d in removed_dumbells:
         cv2.rectangle(frame, (d.x1, d.y1), (d.x2, d.y2), (0, 0, 255), 2)
         cv2.putText(frame, d.get_label(), (d.x1, d.y1), cv2.FONT_HERSHEY_SIMPLEX,
                     1, (255, 255, 255), 2, cv2.LINE_AA)
 
     cv2.imshow('gym', frame)
-
-    for d in dumbbells:
-        if d.check_put_back(frame):
-            d.put_back()
-            removed_dumbells.remove(d)
-        elif d.check_picked_up(frame):
-
-            cv2.imwrite('picked_up.png',frame)
-            d.pick_up()
-            removed_dumbells.append(d)
-
 cap.release()
 cv2.destroyAllWindows()
