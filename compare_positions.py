@@ -57,6 +57,8 @@ while cap.isOpened():
             d.put_back()
             removed_dumbells.remove(d)
         elif d.check_picked_up(frame):
+
+            cv2.imwrite('picked_up.png',frame)
             d.pick_up()
             removed_dumbells.append(d)
 

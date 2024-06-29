@@ -7,7 +7,6 @@ from image_comparer import ImageComparer
 
 imageComparer=ImageComparer()
 template = cv2.imread('dumbbells/empty/5Ks_226.png')
-# template = cv2.imread('average.png')
 
 
 # full rack

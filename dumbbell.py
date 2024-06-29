@@ -30,12 +30,10 @@ class Dumbbell:
         return 'dumbbells/empty/{}Ks_{}.png'.format(self.weight, self.x1)
     
     def pick_up(self):
-        print('pick_up')
         self.removed = True
         self.removed_on = datetime.now()
     
     def put_back(self):
-        print('put_back')
         self.removed = False
         self.removed_on = None
         self.holder = None
