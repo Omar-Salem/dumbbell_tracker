@@ -34,6 +34,9 @@ while cap.isOpened():
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
 
+    if frame is None:
+        break
+    
     if not init:
         init=True
         for d in dumbbells:
