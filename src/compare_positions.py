@@ -10,29 +10,25 @@ from member_finder import MemberFinder
 
 
 '''
-Get (x1,y1), (x2, y2) of each dumbbell from an image of the full rack, as small as possible
+Get (x1,y1), (x2, y2) of each dumbbell from an image of the full rack
 https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
 '''
-dumbbells = [Dumbbell(5, 226, 441, 243, 452)]
+# dumbbells = [Dumbbell(5, 226, 441, 243, 452)]
+dumbbells = [Dumbbell(5, 200, 423, 255, 481)]
 member_finder = MemberFinder()
 video_path = '../resources/v.mp4'
 cap = cv2.VideoCapture(video_path)
 removed_dumbells = []
 
 
-def crop(image, d):
-    return image[d.y1:d.y2, d.x1:d.x2]
-
-
-def prepare_dumbbells():
-    image = cv2.imread('../resources/empty_rack.png', cv2.IMREAD_GRAYSCALE)
+def set_dumbbells_empty_templates():
+    empty_rack = cv2.imread('../resources/empty_rack.png', cv2.IMREAD_GRAYSCALE)
+    # full_rack = cv2.imread('../resources/full_rack.png', cv2.IMREAD_GRAYSCALE)
     for d in dumbbells:
-        cropped_image = crop(image, d)
-        cv2.imwrite(d.get_empty_template_file_path(), cropped_image)
-        d.set_cv2_empty_template_image(cv2.imread(d.get_empty_template_file_path()))
+        d.set_empty_template(empty_rack)
 
 
-prepare_dumbbells()
+set_dumbbells_empty_templates()
 while cap.isOpened():
 
     (success, frame) = cap.read()

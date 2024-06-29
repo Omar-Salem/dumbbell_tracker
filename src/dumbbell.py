@@ -1,5 +1,7 @@
 from datetime import datetime
 from image_comparer import ImageComparer
+import cv2
+
 class Dumbbell:
     imageComparer = ImageComparer()
     def __init__(
@@ -20,11 +22,10 @@ class Dumbbell:
         self.removed_on = None
         self.holder = None
 
-    def get_cv2_empty_template_image(self):
-        return self.empty_template_image
-
-    def set_cv2_empty_template_image(self, cv2Image):
-        self.empty_template_image = cv2Image
+    def set_empty_template(self,frame):
+        cropped_image = self.__crop(frame)
+        cv2.imwrite(self.get_empty_template_file_path(), cropped_image)
+        self.empty_template_image = cv2.imread(self.get_empty_template_file_path())
 
     def get_empty_template_file_path(self):
         return '../resources/dumbbells/empty/{}Ks_{}.png'.format(self.weight, self.x1)
@@ -56,6 +57,6 @@ class Dumbbell:
         return image[self.y1:self.y2, self.x1:self.x2]
 
     def __is_place_holder_visible(self,frame):
-        empty_holder_template = self.get_cv2_empty_template_image()
+        empty_holder_template = self.empty_template_image
         search_area = self.__crop(frame)  # restrict search area
         return self.imageComparer.check_images_similar(empty_holder_template, search_area)
