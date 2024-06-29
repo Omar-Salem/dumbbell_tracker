@@ -23,5 +23,5 @@ Obtained by [training yolo](https://docs.ultralytics.com/usage/cli/#__tabbed_1_2
 ```sh
 yolo train data=dataset.yaml model=yolov8n.pt epochs=3 lr0=0.01
 ```
-##### db
+##### faces
 A folder containing the person's photos, each file should have 1 person in it, file name is the person's name.
