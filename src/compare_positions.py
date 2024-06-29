@@ -4,14 +4,15 @@
 import cv2
 import datetime
 from dumbbell import Dumbbell
+import time
 # from member_finder import MemberFinder
 
 '''
 Get (x1,y1), (x2, y2) of each dumbbell from an image of the full rack
 https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
 '''
-# dumbbells = [Dumbbell(5, 226, 441, 243, 452)]
-dumbbells = [Dumbbell(5, 200, 423, 255, 481)]
+dumbbells = [Dumbbell(5, 226, 441, 243, 452)]
+# dumbbells = [Dumbbell(5, 200, 423, 255, 481)]
 # member_finder = MemberFinder()
 video_path = '../resources/v.mp4'
 cap = cv2.VideoCapture(video_path)
@@ -43,13 +44,16 @@ while cap.isOpened():
         # cv2.rectangle(frame, (d.x1, d.y1), (d.x2, d.y2), (0, 0, 255), 2)
 
     for d in dumbbells:
-        if d.check_put_back(frame):
-            # d.put_back(frame) #TODO take frame later, otherwise hand is shown!
-            removed_dumbells.remove(d)
-        elif d.check_removed(frame):
+        if d.check_removed(frame):
+            print('removed')
             # cv2.imwrite('picked_up.png',frame)
             d.remove()
             removed_dumbells.append(d)
+        elif d.check_put_back(frame):
+            print('put_back')
+            # d.put_back(frame) #TODO take frame later, otherwise hand is shown!
+            if d in removed_dumbells:
+                removed_dumbells.remove(d)
 
     for d in removed_dumbells:
         cv2.rectangle(frame, (d.x1, d.y1), (d.x2, d.y2), (0, 0, 255), 2)
@@ -57,5 +61,6 @@ while cap.isOpened():
                     1, (255, 255, 255), 2, cv2.LINE_AA)
 
     cv2.imshow('gym', frame)
+    time.sleep(0.0625)
 cap.release()
 cv2.destroyAllWindows()

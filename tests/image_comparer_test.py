@@ -14,7 +14,7 @@ for x in range(127):
     d='frames/frame{}.png'.format(x)
     print(d)
     test = cv2.imread(d)[441:452, 226:243]
-    b=imageComparer.check_images_similar(template, test)
+    b=imageComparer.calculate_images_similarity_score(template, test)
     if b:
         cv2.imwrite('negative matching failure_1.png', test)
         raise('negative matching failed')
@@ -24,7 +24,7 @@ for x in range(151,244):
     d='frames/frame{}.png'.format(x)
     print(d)
     test = cv2.imread(d)[441:452, 226:243]
-    b=imageComparer.check_images_similar(template, test)
+    b=imageComparer.calculate_images_similarity_score(template, test)
     if not b:
         cv2.imwrite('positive matching failure.png', test)
         raise('positive matching failed')
@@ -34,7 +34,7 @@ for x in range(245,322):
     d='frames/frame{}.png'.format(x)
     print(d)
     test = cv2.imread(d)[441:452, 226:243]
-    b=imageComparer.check_images_similar(template, test)
+    b=imageComparer.calculate_images_similarity_score(template, test)
     if b:
         cv2.imwrite('negative matching failure_2.png', test)
         raise('negative matching 2 failed')

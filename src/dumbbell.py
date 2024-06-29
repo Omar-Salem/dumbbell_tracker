@@ -41,6 +41,15 @@ class Dumbbell:
     def get_dumbbell_image_file_path(self):
         return '../resources/dumbbells/full/{}Ks_{}.png'.format(self.weight, self.x1)
 
+    def check_put_back(self,frame):
+        empty_holder_visible = self.__is_holder_visible(frame)
+        # print('empty_holder_visible: '+str(empty_holder_visible))
+        return self.removed and self.__get_seconds_passed_since_remove()>1 and not empty_holder_visible  
+    
+    def check_removed(self,frame):
+        moved = self.__has_dumbbell_moved(frame)
+        return moved and not self.removed 
+
     def remove(self):
         self.removed = True
         self.removed_on = datetime.now()
@@ -51,18 +60,13 @@ class Dumbbell:
         self.member = None
         self.put_back_on = datetime.now()
         self.set_dumbbell_image(frame)
-
-    def check_put_back(self,frame):
-        empty_holder_visible = self.__is_holder_visible(frame)
-        return self.removed and self.__get_seconds_passed_since_remove()>1 and not empty_holder_visible  
-    
-    def check_removed(self,frame):
-        moved = self.__has_dumbbell_moved(frame)
-        return moved and not self.removed
     
     def get_label(self):
        return '{} {}Kg {}'.format(self.member, self.weight, self.__get_seconds_passed_since_remove())
-    
+
+    def __get_seconds_passed_since_put_back(self):
+        return round( (datetime.now() - self.put_back_on).total_seconds())
+       
     def __get_seconds_passed_since_remove(self):
         return round( (datetime.now() - self.removed_on).total_seconds())
     
@@ -71,8 +75,12 @@ class Dumbbell:
 
     def __has_dumbbell_moved(self,frame):
         search_area = self.__crop(frame)  # restrict search area
-        return not self.imageComparer.check_images_similar(self.dumbbell_image, search_area)
+        score = self.imageComparer.calculate_images_similarity_score(self.dumbbell_image, search_area)
+       
+        return score<0.5
     
     def __is_holder_visible(self,frame):
         search_area = self.__crop(frame)  # restrict search area
-        return self.imageComparer.check_images_similar(self.holder_image, search_area)
+        score =  self.imageComparer.calculate_images_similarity_score(self.holder_image, search_area)
+        print(score)
+        return score>0.5
