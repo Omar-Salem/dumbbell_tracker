@@ -1,6 +1,9 @@
 import cv2
 from ultralytics import YOLO
-
+import os
+import shutil
+import random
+from pathlib import Path
 
 class Coords:
     def __init__(
@@ -16,15 +19,28 @@ class Coords:
         self.h = h
 
 def __extract_coords(box):
-    print(box)
     xywhn=box.xywhn[0]
-    return Coords(int(xywhn[0].item()),int(xywhn[1].item()),int(xywhn[2].item()),int(xywhn[3].item()))
+    return Coords(float(xywhn[0].item()),float(xywhn[1].item()),float(xywhn[2].item()),float(xywhn[3].item()))
 
 
+# TODO:get dynamically
 video_path = '../resources/members/Omar Salem.mov'
 member_name='Omar Salem'
+clazz=0
+
+dataset_dir = '../resources/members/dataset'
+test_dir = os.path.join(dataset_dir, 'test')
+train_dir = os.path.join(dataset_dir, 'train')
+valid_dir = os.path.join(dataset_dir, 'valid')
+
+random.seed(42)
+train_ratio = 0.80
+# val_ratio = 0.10
+# test_ratio = 0.10
+
 cap = cv2.VideoCapture(video_path)
 model = YOLO("../resources/yolov8n-face.pt")
+frame_count=-1
 while cap.isOpened():
 
     (success, frame) = cap.read()
@@ -35,19 +51,37 @@ while cap.isOpened():
     if frame is None:
         break
 
+    frame_count+=1
+
     results = model.predict(source=frame, conf=0.7)
     if(len(results)<1):
-        raise Exception("prediction failed")
+        continue
+        # raise Exception("prediction failed")
     faces=results[0].boxes
     if(len(faces)!=1):
-        raise Exception("exactly 1 face needed")
+        continue
+        # raise Exception("exactly 1 face needed")
     
     coords=__extract_coords(faces[0])
-    print(coords)
-    # top_x=coords.x
-    # top_y
-    # bottom_x
-    # bottom_y=
-    # cv2.rectangle(frame, (top_x,top_y), (bottom_x,bottom_y), (0, 0,255), 2)
-    # cv2.imwrite('coords.png', frame)
-    raise Exception("zzzzz")
+    p=random.randrange(0,2)
+    is_train=p<=train_ratio
+    is_valid=p>train_ratio and p<=0.90
+    is_test=p>0.90 and p<=1.0
+    dir=''
+    if(is_train):
+        dir=train_dir
+    elif(is_valid):
+        dir=valid_dir
+    elif(is_test):
+        dir=test_dir
+    
+    images_dir = os.path.join(dir, 'images')
+    image_file_path=os.path.join(images_dir, str(frame_count)+'.png')
+    cv2.imwrite(image_file_path, frame)
+
+    labels_dir = os.path.join(dir, 'labels')
+    label_file_path=os.path.join(labels_dir, str(frame_count)+'.txt')
+    f = open(label_file_path, "w")
+    f.write("{} {} {} {} {}".format(clazz,coords.x,coords.y,coords.w,coords.h))
+    f.close()
+    raise Exception("exactly 1 face needed")
