@@ -1,16 +1,6 @@
 # Dumbell Tracker
 ## Tracking gym member who don't put back their weights!
 
-### Required packages
-```sh
-pip3 install dlib
-pip3 install tf-keras
-pip3 install deepface
-pip3 install ultralytics
-pip3 install opencv-python
-pip3 install scikit-image
-```
-
 ### Run demo
 ```sh
 git clone git@github.com:Omar-Salem/dumbbell_tracker.git

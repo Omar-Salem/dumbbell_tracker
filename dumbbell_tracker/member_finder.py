@@ -9,11 +9,7 @@ import numpy
 
 class MemberFinder:
     def __init__(self):
-        self.model = YOLO("../resources/yolov8n-face.pt")
-
-        self.backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
-        self.db_path="../resources/members"
-        self.face_size_threshold=100
+        self.model = YOLO("../resources/yolov8n-members.pt")
 
     def __extractXY(self,b):
         xyxy=b.xyxy[0]
@@ -30,14 +26,15 @@ class MemberFinder:
         return personName
 
     def find_person_closest_to_point(self, frame:numpy.ndarray, q:list):
-        results = self.model.predict(source=frame, conf=0.7,classes=[0])  # Display preds. Accepts all YOLO predict arguments
+        results = self.model.predict(source=frame, conf=0.7)  # Display preds. Accepts all YOLO predict arguments
+        print(results)
         if(len(results)<1):
             return None
         persons=results[0].boxes
         if(len(persons)<1):
             return None
         coords=map(self.__extractXY, persons)
-        coords=[c for c in coords if math.dist([c[0],c[1]], [c[2],c[3]])>=self.face_size_threshold] #inlcude only near faces
+        # coords=[c for c in coords if math.dist([c[0],c[1]], [c[2],c[3]])>=self.face_size_threshold] #inlcude only near faces
         
         if(len(coords)<1):
             return None
