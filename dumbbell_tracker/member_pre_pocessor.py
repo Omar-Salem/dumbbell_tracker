@@ -40,6 +40,7 @@ train_ratio = 0.80
 
 cap = cv2.VideoCapture(video_path)
 model = YOLO("../resources/yolov8n-face.pt")
+face_prediction_conf=0.6
 frame_count=-1
 while cap.isOpened():
 
@@ -53,7 +54,7 @@ while cap.isOpened():
 
     frame_count+=1
 
-    results = model.predict(source=frame, conf=0.7)
+    results = model.predict(source=frame, conf=face_prediction_conf)
     if(len(results)<1):
         continue
         # raise Exception("prediction failed")
@@ -84,4 +85,11 @@ while cap.isOpened():
     f = open(label_file_path, "w")
     f.write("{} {} {} {} {}".format(clazz,coords.x,coords.y,coords.w,coords.h))
     f.close()
-    raise Exception("exactly 1 face needed")
+
+# Load a model
+# model = YOLO("yolov8n.yaml")  # build a new model from YAML
+model = YOLO(os.path.join(dataset_dir, 'weights.pt'))  # load a pretrained model (recommended for training)
+# model = YOLO("yolov8n.yaml").load("yolov8n.pt")  # build from YAML and transfer weights
+
+# Train the model
+results = model.train(data=os.path.join(dataset_dir, 'data.yaml'), epochs=3)

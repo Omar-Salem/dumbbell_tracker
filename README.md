@@ -15,3 +15,9 @@ yolo train data=dataset.yaml model=yolov8n.pt epochs=3 lr0=0.01
 ```
 ##### members
 A folder containing the members's photos, each file should have 1 person in it, file name is the person's name.
+
+
+### Resources
+https://harminder.dev/projects/ai-powered-property-surveillance/training/#create-a-train-val-and-test-split
+
+https://www.youtube.com/watch?v=SDV6Gz0suAk&t=330s
