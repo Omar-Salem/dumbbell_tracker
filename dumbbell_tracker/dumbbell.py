@@ -1,9 +1,11 @@
 from datetime import datetime
 from image_comparer import ImageComparer
+from member_finder import MemberFinder
 import cv2
 
 class Dumbbell:
     imageComparer = ImageComparer()
+    memberFinder=MemberFinder()
 
     def __init__(
             self,
@@ -50,9 +52,10 @@ class Dumbbell:
         moved = self.__has_dumbbell_moved(frame)
         return moved and not self.removed 
 
-    def remove(self):
+    def remove(self,frame):
         self.removed = True
         self.removed_on = datetime.now()
+        self.member=self.memberFinder.find_person_closest_to_point(frame,None)
     
     def put_back(self,frame):
         self.removed = False

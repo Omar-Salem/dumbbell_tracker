@@ -23,7 +23,8 @@ def __extract_coords(box):
     return Coords(float(xywhn[0].item()),float(xywhn[1].item()),float(xywhn[2].item()),float(xywhn[3].item()))
 
 # TODO:get dynamically
-video_path = '../resources/members/Omar Salem.mov'
+video_path = '../resources/members/Omar Salem.mp4'
+# video_path = '../resources/members/Omar Salem.mov'
 member_name='Omar Salem'
 clazz=0
 
@@ -32,13 +33,13 @@ test_dir = os.path.join(dataset_dir, 'test')
 train_dir = os.path.join(dataset_dir, 'train')
 valid_dir = os.path.join(dataset_dir, 'valid')
 
-random.seed(42)
 train_ratio = 0.80
 val_ratio = 0.10
-face_prediction_conf=0.6
+face_prediction_conf=0.5
+training_epochs_count=10
 
 def get_set_dir():
-    p=random.randrange(0,2)
+    p=random.uniform(0.0, 1.0)
     is_train=p<=train_ratio
     is_valid=p>train_ratio and p<=train_ratio+val_ratio
     is_test=p>train_ratio+val_ratio
@@ -94,16 +95,13 @@ def build_dataset():
 
 def train():
     # Load a model
-    # model = YOLO("yolov8n.yaml")  # build a new model from YAML
-    # model = YOLO(os.path.join(dataset_dir, 'weights.pt'))  # load a pretrained model (recommended for training)
-    # model = YOLO("yolov8n.yaml").load("yolov8n.pt")  # build from YAML and transfer weights
-    model = YOLO("yolov8n.pt")
-    # Train the model
+    model = YOLO("yolov8n.yaml")  # build a new model from YAML
+    # model = YOLO(os.path.join(dataset_dir, 'yolov8n-members.pt'))  # load a pretrained model (recommended for training)
     dataset_yaml_path=Path(os.path.join(dataset_dir, 'data.yaml')).absolute()
-    results = model.train(data=dataset_yaml_path, epochs=3)
+    results = model.train(data=dataset_yaml_path, epochs=training_epochs_count)
 
-    im2 = cv2.imread("test.jpg")
-    results = model.predict(source=im2, save=True, save_txt=True)
+    # im2 = cv2.imread("test.jpg")
+    # results = model.predict(source=im2, save=True, save_txt=True)
 
 build_dataset()
 train()

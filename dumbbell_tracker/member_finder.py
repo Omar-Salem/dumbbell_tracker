@@ -3,38 +3,28 @@ from PIL import Image
 from ultralytics import YOLO
 import math
 import sys 
-from deepface import DeepFace
 import os
 import numpy
 
 class MemberFinder:
     def __init__(self):
-        self.model = YOLO("../resources/yolov8n-members.pt")
+        self.model = YOLO("../resources/members/dataset/yolov8n-members.pt")
 
     def __extractXY(self,b):
         xyxy=b.xyxy[0]
         return int(xyxy[0].item()),int(xyxy[1].item()),int(xyxy[2].item()),int(xyxy[3].item())
-    
-    def __identify__(self,frame):
-        result = DeepFace.find(img_path = frame, db_path = self.db_path, detector_backend=self.backends[2],enforce_detection=False)
-        personName=None
-        for row in result:
-            if len(row["identity"])>0:
-                identity = row["identity"][0]
-                fileNameWithExtensions=os.path.basename(identity)
-                personName=os.path.splitext(fileNameWithExtensions)[0]
-        return personName
 
     def find_person_closest_to_point(self, frame:numpy.ndarray, q:list):
-        results = self.model.predict(source=frame, conf=0.7)  # Display preds. Accepts all YOLO predict arguments
-        print(results)
-        if(len(results)<1):
+        resultsList = self.model.predict(source=frame, conf=0.7)  # Display preds. Accepts all YOLO predict arguments
+        if(len(resultsList)<1):
             return None
-        persons=results[0].boxes
+        result=resultsList[0]
+        return list(result.names.values())[0]
+        print()
+        persons=result.boxes
         if(len(persons)<1):
             return None
         coords=map(self.__extractXY, persons)
-        # coords=[c for c in coords if math.dist([c[0],c[1]], [c[2],c[3]])>=self.face_size_threshold] #inlcude only near faces
         
         if(len(coords)<1):
             return None
