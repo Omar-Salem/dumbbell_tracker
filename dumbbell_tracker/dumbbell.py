@@ -2,12 +2,16 @@ from datetime import datetime
 from image_comparer import ImageComparer
 from member_finder import MemberFinder
 import cv2
+import os
 
 class Dumbbell:
     imageComparer = ImageComparer()
     memberFinder=MemberFinder()
+    image_dir='resources/dumbbells'
+    holder_images_dir=os.path.join(image_dir, 'empty')
+    dumbbell_images_dir=os.path.join(image_dir, 'full')
 
-    def __init__(
+    def __init__(   
             self,
             weight,
             x1,
@@ -38,14 +42,13 @@ class Dumbbell:
         self.dumbbell_image = cv2.imread(self.get_dumbbell_image_file_path())
 
     def get_holder_image_file_path(self):
-        return '../resources/dumbbells/empty/{}Ks_{}.png'.format(self.weight, self.x1)
+        return '{}/{}Ks_{}.png'.format(self.holder_images_dir,self.weight, self.x1)
     
     def get_dumbbell_image_file_path(self):
-        return '../resources/dumbbells/full/{}Ks_{}.png'.format(self.weight, self.x1)
+        return '{}/{}Ks_{}.png'.format(self.dumbbell_images_dir,self.weight, self.x1)
 
     def check_put_back(self,frame):
         empty_holder_visible = self.__is_holder_visible(frame)
-        # print('empty_holder_visible: '+str(empty_holder_visible))
         return self.removed and self.__get_seconds_passed_since_remove()>1 and not empty_holder_visible  
     
     def check_removed(self,frame):
@@ -55,7 +58,7 @@ class Dumbbell:
     def remove(self,frame):
         self.removed = True
         self.removed_on = datetime.now()
-        self.member=self.memberFinder.find_person_closest_to_point(frame,None)
+        self.member=self.memberFinder.identify_member(frame)
     
     def put_back(self,frame):
         self.removed = False

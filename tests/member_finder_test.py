@@ -6,13 +6,13 @@ from dumbbell_tracker.member_finder import MemberFinder
 
 target=MemberFinder()
 
-class TestCategorizeByAge(unittest.TestCase):
-	def test_child(self):
+class MemberFinderTest(unittest.TestCase):
+	def member_identified(self):
 		# Arrange
 		frame=cv2.imread(str('picked_up.png'))
 		
 		# Act
-		member=target.find_person_closest_to_point(frame,[226, 441])
+		member=target.identify_member(frame)
 
 		# Assert
 		self.assertEqual("Omar Salem",member)

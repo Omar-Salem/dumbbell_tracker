@@ -12,14 +12,13 @@ https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordi
 '''
 dumbbells = [Dumbbell(5, 226, 441, 243, 452)]
 # dumbbells = [Dumbbell(5, 200, 423, 255, 481)]
-# member_finder = MemberFinder()
-video_path = '../resources/v.mp4'
+video_path = 'resources/v.mp4'
 cap = cv2.VideoCapture(video_path)
 removed_dumbells = []
 
 
 def set_dumbbells_empty_templates():
-    empty_rack = cv2.imread('../resources/dumbbells/empty_rack.png', cv2.IMREAD_GRAYSCALE)
+    empty_rack = cv2.imread('resources/dumbbells/empty_rack.png', cv2.IMREAD_GRAYSCALE)
     for d in dumbbells:
         d.set_holder_template(empty_rack)
 

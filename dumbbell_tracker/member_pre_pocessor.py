@@ -22,13 +22,12 @@ def __extract_coords(box):
     xywhn=box.xywhn[0]
     return Coords(float(xywhn[0].item()),float(xywhn[1].item()),float(xywhn[2].item()),float(xywhn[3].item()))
 
-# TODO:get dynamically
-video_path = '../resources/members/Omar Salem.mp4'
-# video_path = '../resources/members/Omar Salem.mov'
+# TODO:get as param
+video_path = 'resources/members/Omar Salem.mp4'
 member_name='Omar Salem'
 clazz=0
 
-dataset_dir = '../resources/members/dataset'
+dataset_dir = 'resources/members/dataset'
 test_dir = os.path.join(dataset_dir, 'test')
 train_dir = os.path.join(dataset_dir, 'train')
 valid_dir = os.path.join(dataset_dir, 'valid')
