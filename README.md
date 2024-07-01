@@ -4,20 +4,14 @@
 ### Run demo
 ```sh
 git clone git@github.com:Omar-Salem/dumbbell_tracker.git
-cd dumbbell_tracker
+cd dumbbell_tracker/dumbbell_tracker
+python3 tracker.py
 ```
 
 ### Key elements
-##### dumbbell_weights.pt
-Obtained by [training yolo](https://docs.ultralytics.com/usage/cli/#__tabbed_1_2), here the dataset of interest was obtained from https://universe.roboflow.com/cgm/dumbbell_2.5, but it can be any other set.
-```sh
-yolo train data=dataset.yaml model=yolov8n.pt epochs=3 lr0=0.01
-```
-##### members
-A folder containing the members's photos, each file should have 1 person in it, file name is the person's name.
+##### dumbbell_tracker/resources/dumbbells/empty_rack.png
+An image of the rack with the dumbbells removed, coordinates of each 
+placeholder (obtained manually) are used to generate each dumbbell empty placeholder, these images are then used to check when a dumbbell has been removed.
 
-
-### Resources
-https://harminder.dev/projects/ai-powered-property-surveillance/training/#create-a-train-val-and-test-split
-
-https://www.youtube.com/watch?v=SDV6Gz0suAk&t=330s
+##### dumbbell_tracker/member_pre_pocessor.py
+Fed a video of a member moving their head around, preferably using the same camera and in same lighting condition as detections, results are then stored in dumbbell_tracker/resources/members/dataset/yolov8n-members.pt for member identification.

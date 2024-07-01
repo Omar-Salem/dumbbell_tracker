@@ -69,7 +69,8 @@ class Dumbbell:
         self.set_dumbbell_image(frame)
     
     def get_label(self):
-       return '{} {}Kg {}'.format(self.member, self.weight, self.__get_seconds_passed_since_remove())
+       member_first_name=self.member.split(' ')[0]
+       return '{} {}Kg {}'.format(member_first_name, self.weight, self.__get_seconds_passed_since_remove())
 
     def __get_seconds_passed_since_put_back(self):
         return round( (datetime.now() - self.put_back_on).total_seconds())
