@@ -22,12 +22,12 @@ def __extract_coords(box):
     xywhn=box.xywhn[0]
     return Coords(float(xywhn[0].item()),float(xywhn[1].item()),float(xywhn[2].item()),float(xywhn[3].item()))
 
-# TODO:get as param
-video_path = 'resources/members/Omar Salem.mp4'
-member_name='Omar Salem'
-clazz=0
+resources_dir=Path('resources').absolute()
+video_path = os.path.join(resources_dir, 'members/Omar Salem.mp4') # TODO:get as param
+member_name='Omar Salem' # TODO:get as param
+clazz=0 # TODO:read from data.yaml
 
-dataset_dir = 'resources/members/dataset'
+dataset_dir = os.path.join(resources_dir, 'members/dataset')
 test_dir = os.path.join(dataset_dir, 'test')
 train_dir = os.path.join(dataset_dir, 'train')
 valid_dir = os.path.join(dataset_dir, 'valid')
@@ -35,6 +35,7 @@ valid_dir = os.path.join(dataset_dir, 'valid')
 train_ratio = 0.80
 val_ratio = 0.10
 face_prediction_conf=0.5
+face_detection_model_path=os.path.join(resources_dir, 'yolov8n-face.pt')
 training_epochs_count=10
 
 def get_set_dir():
@@ -63,7 +64,7 @@ def write_label(dir,coords,frame_count):
 
 def build_dataset():
     cap = cv2.VideoCapture(video_path)
-    face_detection_model = YOLO("../resources/yolov8n-face.pt")
+    face_detection_model = YOLO(face_detection_model_path)
     frame_count=-1
     while cap.isOpened():
 
@@ -96,7 +97,7 @@ def train():
     # Load a model
     model = YOLO("yolov8n.yaml")  # build a new model from YAML
     # model = YOLO(os.path.join(dataset_dir, 'yolov8n-members.pt'))  # load a pretrained model (recommended for training)
-    dataset_yaml_path=Path(os.path.join(dataset_dir, 'data.yaml')).absolute()
+    dataset_yaml_path=os.path.join(dataset_dir, 'data.yaml')
     results = model.train(data=dataset_yaml_path, epochs=training_epochs_count)
 
     # im2 = cv2.imread("test.jpg")
