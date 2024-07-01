@@ -1,24 +1,29 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
+from pathlib import Path
 import cv2
 import datetime
 from dumbbell import Dumbbell
 import time
 
+
+resources_dir=Path('resources').absolute()
+
 '''
 Get (x1,y1), (x2, y2) of each dumbbell from an image of the full rack
 https://www.mobilefish.com/services/record_mouse_coordinates/record_mouse_coordinates.php
 '''
-dumbbells = [Dumbbell(5, 226, 441, 243, 452)]
-# dumbbells = [Dumbbell(5, 200, 423, 255, 481)]
-video_path = 'resources/v.mp4'
+dumbbells = [Dumbbell(5, 226, 441, 243, 452)] # TODO: move dumbbell preprocessing step into own class
+video_path = os.path.join(resources_dir, 'v.mp4')
 cap = cv2.VideoCapture(video_path)
 removed_dumbells = []
 
 
 def set_dumbbells_empty_templates():
-    empty_rack = cv2.imread('resources/dumbbells/empty_rack.png', cv2.IMREAD_GRAYSCALE)
+    empty_rack_file_path=os.path.join(resources_dir, 'dumbbells/empty_rack.png')
+    empty_rack = cv2.imread(empty_rack_file_path, cv2.IMREAD_GRAYSCALE)
     for d in dumbbells:
         d.set_holder_template(empty_rack)
 
@@ -45,7 +50,6 @@ while cap.isOpened():
             d.remove(frame)
             removed_dumbells.append(d)
         elif d.check_put_back(frame):
-            print('put_back')
             # d.put_back(frame) #TODO take frame later, otherwise hand is shown!
             if d in removed_dumbells:
                 removed_dumbells.remove(d)
@@ -56,6 +60,6 @@ while cap.isOpened():
                     1, (255, 255, 255), 2, cv2.LINE_AA)
 
     cv2.imshow('gym', frame)
-    time.sleep(0.0625)
+    time.sleep(0.02)
 cap.release()
 cv2.destroyAllWindows()

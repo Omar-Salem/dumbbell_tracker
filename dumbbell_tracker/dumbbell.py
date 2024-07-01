@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 from image_comparer import ImageComparer
 from member_finder import MemberFinder
 import cv2
@@ -7,7 +8,7 @@ import os
 class Dumbbell:
     imageComparer = ImageComparer()
     memberFinder=MemberFinder()
-    image_dir='resources/dumbbells'
+    image_dir=Path('resources/dumbbells').absolute()
     holder_images_dir=os.path.join(image_dir, 'empty')
     dumbbell_images_dir=os.path.join(image_dir, 'full')
 
