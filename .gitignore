@@ -14,3 +14,4 @@ build/
 images/
 labels/
 *.cache
+results/

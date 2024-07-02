@@ -97,10 +97,8 @@ def train():
     # Load a model
     model = YOLO("yolov8n.yaml")  # TODO check if first time to build a new model from YAML, if not, load a pretrained model YOLO(os.path.join(dataset_dir, 'yolov8n-members.pt'))
     dataset_yaml_path=os.path.join(dataset_dir, 'data.yaml')
-    results = model.train(data=dataset_yaml_path, epochs=training_epochs_count)
-    print(results)
-    # im2 = cv2.imread("test.jpg")
-    # results = model.predict(source=im2, save=True, save_txt=True)
+    model.train(data=dataset_yaml_path, epochs=training_epochs_count, project=dataset_dir,name='results')
+    os.rename(os.path.join(dataset_dir, 'results/weights/best.pt'), os.path.join(dataset_dir, 'yolov8n-members.pt'))
 
 build_dataset()
 train()

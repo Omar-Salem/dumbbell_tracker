@@ -4,10 +4,11 @@ from image_comparer import ImageComparer
 from member_finder import MemberFinder
 import cv2
 import os
+from threading import Thread
 
 class Dumbbell:
-    imageComparer = ImageComparer()
-    memberFinder=MemberFinder()
+    image_comparer = ImageComparer()
+    member_finder=MemberFinder()
     image_dir=Path('resources/dumbbells').absolute()
     holder_images_dir=os.path.join(image_dir, 'empty')
     dumbbell_images_dir=os.path.join(image_dir, 'full')
@@ -59,7 +60,7 @@ class Dumbbell:
     def remove(self,frame):
         self.removed = True
         self.removed_on = datetime.now()
-        self.member=self.memberFinder.identify_member(frame)
+        self.__identify_member(frame)
     
     def put_back(self,frame):
         self.removed = False
@@ -69,7 +70,7 @@ class Dumbbell:
         self.set_dumbbell_image(frame)
     
     def get_label(self):
-       member_first_name=self.member.split(' ')[0]
+       member_first_name='' if self.member is None else self.member.split(' ')[0]
        return '{} {}Kg {}'.format(member_first_name, self.weight, self.__get_seconds_passed_since_remove())
 
     def __get_seconds_passed_since_put_back(self):
@@ -83,12 +84,16 @@ class Dumbbell:
 
     def __has_dumbbell_moved(self,frame):
         search_area = self.__crop(frame)  # restrict search area
-        score = self.imageComparer.calculate_images_similarity_score(self.dumbbell_image, search_area)
-       
+        score = self.image_comparer.calculate_images_similarity_score(self.dumbbell_image, search_area)
         return score<0.5
     
     def __is_holder_visible(self,frame):
         search_area = self.__crop(frame)  # restrict search area
-        score =  self.imageComparer.calculate_images_similarity_score(self.holder_image, search_area)
-        print(score)
+        score =  self.image_comparer.calculate_images_similarity_score(self.holder_image, search_area)
         return score>0.5
+
+    def __identify_member_async(self,frame):
+        Thread(target=self.__identify_member, args=(frame,)).start()
+        
+    def __identify_member(self,frame):
+        self.member=self.member_finder.identify_member(frame)
